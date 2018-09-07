@@ -21,7 +21,7 @@ paths:
           examples:
             application/json:
               success: 'true'
-              message: Car created
+              message: OK
               cars:
                 - make: Arium
                   model: Nova
@@ -35,6 +35,8 @@ paths:
       operationId: createCar
       summary: Create car
       description: Creates a new car
+      consumes:
+        - application/json
       parameters:
         - name: car
           in: body
@@ -58,7 +60,7 @@ paths:
           examples:
             application/json:
               success: 'false'
-              message: Incomplete information provided
+              message: Invalid car object
   /cars/{carId}:
     get:
       summary: Get specific car
@@ -73,7 +75,7 @@ paths:
           examples:
             application/json:
               success: 'true'
-              message: Car found
+              message: OK
               car:
                 make: Arium
                 model: Thanos
@@ -90,8 +92,16 @@ paths:
     put:
       summary: Update specific car
       description: Change the owner of a car
+      consumes:
+        - text/plain
       parameters:
         - $ref: '#/parameters/carId'
+        - name: owner
+          in: body
+          description: New car owner
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: OK
@@ -137,6 +147,11 @@ definitions:
         type: string
       owner:
         type: string
+    example:
+      make: Arium
+      model: Nova
+      colour: Sunburst Orange
+      owner: Dan
   ResponseBody:
     type: object
     properties:
