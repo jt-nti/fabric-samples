@@ -1,53 +1,180 @@
 swagger: '2.0'
-
 info:
-  version: "1.0.0"
-  title: REST API app
-
+  version: 1.0.0
+  title: fabcar API
+  description: Simple API to interact with sample fabcar chaincode
 consumes:
   - text/plain
-
 produces:
   - application/json
-
 paths:
-  /:
+  /cars:
     get:
-      description: Hello world path
+      operationId: getAllCars
+      summary: Get all cars
+      description: Returns an array of all cars
       responses:
         200:
-          description: Hello World
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/CarsResponse'
           examples:
-            string: "Hello World!"
-
+            application/json:
+              success: 'true'
+              message: Car created
+              cars:
+                - make: Arium
+                  model: Nova
+                  colour: Sunburst Orange
+                  owner: Dan
+                - make: Arium
+                  model: Thanos
+                  colour: Vibrant Grape
+                  owner: Claudia
+    post:
+      operationId: createCar
+      summary: Create car
+      description: Creates a new car
+      parameters:
+        - name: car
+          in: body
+          description: The car to create
+          schema:
+            $ref: '#/definitions/Car'
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: '#/definitions/CarCreatedResponse'
+          examples:
+            application/json:
+              success: 'true'
+              message: Car created
+              carId: CAR1
+        400:
+          description: Could not create the car
+          schema:
+            $ref: '#/definitions/ResponseBody'
+          examples:
+            application/json:
+              success: 'false'
+              message: Incomplete information provided
+  /cars/{carId}:
+    get:
+      summary: Get specific car
+      description: Returns a single car object
+      parameters:
+        - $ref: '#/parameters/carId'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/CarResponse'
+          examples:
+            application/json:
+              success: 'true'
+              message: Car found
+              car:
+                make: Arium
+                model: Thanos
+                colour: Vibrant Grape
+                owner: Claudia
+        404:
+          description: The car does not exist
+          schema:
+            $ref: '#/definitions/ResponseBody'
+          examples:
+            application/json:
+              success: 'false'
+              message: No car hear! Oh dear!
+    put:
+      summary: Update specific car
+      description: Change the owner of a car
+      parameters:
+        - $ref: '#/parameters/carId'
+      responses:
+        200:
+          description: OK
+        400:
+          description: Could not update car details
+          schema:
+            $ref: '#/definitions/ResponseBody'
+          examples:
+            application/json:
+              success: 'false'
+              message: Only change of owner is supported
   /health:
     get:
       operationId: getHealth
       tags:
         - Health
-      description: Get health status of app 
+      description: Get health status of app
       responses:
-        200:
+        '200':
           description: Health check response
           schema:
-            $ref: "#/definitions/HealthResponse"
+            $ref: '#/definitions/HealthResponse'
           examples:
-            application/json: { "success": "true", "message": "Server is up!", "status": "UP" }
-
+            application/json:
+              success: 'true'
+              message: Server is up!
+              status: UP
 
 definitions:
+  Car:
+    type: object
+    required:
+      - make
+      - model
+      - colour
+      - owner
+    properties:
+      make:
+        type: string
+      model:
+        type: string
+      colour:
+        type: string
+      owner:
+        type: string
   ResponseBody:
-    type: "object"
+    type: object
     properties:
       success:
-        type: "boolean"
+        type: boolean
       message:
-        type: "string"
+        type: string
+  CarResponse:
+    allOf:
+      - $ref: '#/definitions/ResponseBody'
+      - properties:
+          car:
+            $ref: '#/definitions/Car'
+  CarsResponse:
+    allOf:
+      - $ref: '#/definitions/ResponseBody'
+      - properties:
+          cars:
+            type: array
+            items:
+              $ref: '#/definitions/Car'
+  CarCreatedResponse:
+    allOf:
+      - $ref: '#/definitions/ResponseBody'
+      - properties:
+          carId:
+            type: string
   HealthResponse:
     allOf:
       - $ref: '#/definitions/ResponseBody'
       - properties:
           status:
-            type: "string"
+            type: string
+
+parameters:
+  carId:
+    name: carId
+    in: path
+    required: true
+    description: The car's ID
+    type: string
