@@ -213,7 +213,7 @@ public final class FabCarTest {
         when(ctx.getStub()).thenReturn(stub);
         when(stub.getStateByRange("CAR0", "CAR999")).thenReturn(new MockCarResultsIterator());
 
-        Car[] cars = contract.queryAllCars(ctx);
+        CarRecord[] cars = contract.queryAllCars(ctx);
 
         final List<Car> expectedCars = new ArrayList<Car>();
         expectedCars.add(new Car("Toyota", "Prius", "blue", "Tomoko"));
@@ -222,7 +222,8 @@ public final class FabCarTest {
         expectedCars.add(new Car("Fiat", "Punto", "violet", "Pari"));
         expectedCars.add(new Car("Holden", "Barina", "brown", "Shotaro"));
 
-        assertThat(cars).containsExactlyElementsOf(expectedCars);
+        assertThat(cars).extracting("key").containsExactly("CAR000", "CAR001", "CAR002", "CAR007", "CAR009");
+        assertThat(cars).extracting("record").containsExactlyElementsOf(expectedCars);
     }
 
     @Nested
