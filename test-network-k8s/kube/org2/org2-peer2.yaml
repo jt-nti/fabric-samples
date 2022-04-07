@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
         - name: main
-          image: ${FABRIC_CONTAINER_REGISTRY}/fabric-peer:${FABRIC_VERSION}
+          image: ghcr.io/hyperledgendary/k8s-fabric-peer:8894856100c8523f5624ffea866e3383a00886d2
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

@@ -165,7 +165,7 @@ function create_channel_org_MSP() {
   mkdir -p ${ORG_MSP_DIR}/tlscacerts
 
   # extract the CA's signing authority from the CA/cainfo response
-  curl -s \
+  curl -s --insecure \
     --cacert ${TEMP_DIR}/cas/${ca_name}/tls-cert.pem \
     https://${ca_name}.${DOMAIN}/cainfo \
     | jq -r .result.CAChain \

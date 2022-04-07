@@ -562,7 +562,11 @@ chaincode:
          path: /opt/hyperledger/ccaas_builder
          propagateEnvironment:
            - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG
-
+       - name: k8s_builder
+         path: /opt/hyperledger/k8s_builder
+         propagateEnvironment:
+           - KUBERNETES_SERVICE_HOST
+           - KUBERNETES_SERVICE_PORT
 
     # The maximum duration to wait for the chaincode build and install process
     # to complete.
